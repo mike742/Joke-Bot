@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            $("#btnGetJokes").click(function () {
+                var idJoke = $('#txtId').val();
+
+                $.ajax({
+                    url: 'JokeService.asmx/GetJokeById',
+                    data: { id: idJoke },
+                    method: 'post',
+                    dataType: 'xml',
+                    success: function (data) {
+                        var jqXml = $(data);
+                        $('#res').html(jqXml.find('firstSentence').text());
+
+                    }
+                });
+            });
+
+            $("#btnGetAllJokes").click(function () {
+                $.ajax({
+                    url: 'JokeService.asmx/GetAllJokes',
+                    method: 'post',
+                    dataType: 'json',
+                    success: function (data) {
+                        var table = $('#tblJokes');
+                        table.empty();
+
+                        console.log(data);
+                        $(data).each(function (i, j) {
+                            table.append('<tr><td>' + j.Id +
+                                '<td>' + j.firstSentence + '</td>' +
+                                '<td>' + j.secondSentence + '</td>' +
+                                '</tr>');
+                        });
+                    },
+                    error: function (err) {
+                        console.log(err)
+                    }
+                });
+            });
+
+        });
+
+    </script>
+</head>
+
+<body style="font-family: Arial, Helvetica, sans-serif;">
+
+    ID : <input id="txtId" type="text" style="width:100px" />
+    <input type="button" id="btnGetJokes" value="Get Joke" />
+    <br /><br />
+    <input type="button" id="btnGetAllJokes" value="Get ALl Jokes" />
+    <br /><br />
+    <div id="res"></div>
+
+    <br /><br />
+    <table id="tblJokes">
+
+    </table>
+</body>
+
+
+
+</html>
